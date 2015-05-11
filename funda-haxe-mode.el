@@ -1,5 +1,5 @@
 ;; Funda HaXe Mode
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Author: Pierre Arlaud
 ;; URL: https://github.com/pierre-arlaud/funda-haxe-mode
 
@@ -29,40 +29,40 @@
 ;;
 
 ;; Define regexps of the haxe grammar
-(setq haxe-namespace '("import" "package"))
-(setq haxe-classdef '("class" "interface" "enum" "typedef" "enum"))
-(setq haxe-scope-modifiers '("static" "public" "private" "override" "get" "set" "inline"))
-(setq haxe-accessors-scope '("get" "set" "default" "null" "never" "dynamic")) ;; `null` is redundant because it's already a constant
-(setq haxe-keywords '("for" "if" "switch" "while" "try" "catch" "do" "else" "case" "default"))
-(setq haxe-sub-keywords '("break" "continue" "return" "new" "in" "extends" "implements" "function" "var"))
-(setq haxe-constant-expressions '("false" "true" "null"))
-(setq haxe-primary-expressions '("this" "super"))
+(setq funda-haxe-namespace '("import" "package"))
+(setq funda-haxe-classdef '("class" "interface" "enum" "typedef" "enum"))
+(setq funda-haxe-scope-modifiers '("static" "public" "private" "override" "get" "set" "inline"))
+(setq funda-haxe-accessors-scope '("get" "set" "default" "null" "never" "dynamic")) ;; `null` is redundant because it's already a constant
+(setq funda-haxe-keywords '("for" "if" "switch" "while" "try" "catch" "do" "else" "case" "default"))
+(setq funda-haxe-sub-keywords '("break" "continue" "return" "new" "in" "extends" "implements" "function" "var"))
+(setq funda-haxe-constant-expressions '("false" "true" "null"))
+(setq funda-haxe-primary-expressions '("this" "super"))
 
 ;; Regular expressions based on lists
-(setq haxe-namespace-regexp (regexp-opt haxe-namespace 'words))
-(setq haxe-classdef-regexp (regexp-opt haxe-classdef 'words))
-(setq haxe-scope-modifiers-regexp (regexp-opt haxe-scope-modifiers 'words))
-(setq haxe-accessors-scope-regexp (regexp-opt haxe-accessors-scope 'words))
-(setq haxe-keywords-regexp (regexp-opt haxe-keywords 'words))
-(setq haxe-sub-keywords-regexp (regexp-opt haxe-sub-keywords 'words))
-(setq haxe-constant-expressions-regexp (regexp-opt haxe-constant-expressions 'words))
-(setq haxe-primary-expressions-regexp (regexp-opt haxe-primary-expressions 'words))
+(setq funda-haxe-namespace-regexp (regexp-opt funda-haxe-namespace 'words))
+(setq funda-haxe-classdef-regexp (regexp-opt funda-haxe-classdef 'words))
+(setq funda-haxe-scope-modifiers-regexp (regexp-opt funda-haxe-scope-modifiers 'words))
+(setq funda-haxe-accessors-scope-regexp (regexp-opt funda-haxe-accessors-scope 'words))
+(setq funda-haxe-keywords-regexp (regexp-opt funda-haxe-keywords 'words))
+(setq funda-haxe-sub-keywords-regexp (regexp-opt funda-haxe-sub-keywords 'words))
+(setq funda-haxe-constant-expressions-regexp (regexp-opt funda-haxe-constant-expressions 'words))
+(setq funda-haxe-primary-expressions-regexp (regexp-opt funda-haxe-primary-expressions 'words))
 
 ;; Regular expressions a little more complicated
 
-(setq haxe-identifier-regexp "\\<\\([a-z][A-Za-z0-9_]*\\)\\>")
-(setq haxe-variable-regexp "\\<\\([A-Z_]*\\|[a-z][A-Za-z0-9_]*\\)\\>") ; constants support
-(setq haxe-classname-regexp "\\<\\([A-Z][A-Za-z0-9_]*\\)\\>")
-(setq haxe-functiondef-param-regexp (concat haxe-identifier-regexp "[ \t]*:"))
+(setq funda-haxe-identifier-regexp "\\<\\([a-z][A-Za-z0-9_]*\\)\\>")
+(setq funda-haxe-variable-regexp "\\<\\([A-Z_]*\\|[a-z][A-Za-z0-9_]*\\)\\>") ; constants support
+(setq funda-haxe-classname-regexp "\\<\\([A-Z][A-Za-z0-9_]*\\)\\>")
+(setq funda-haxe-functiondef-param-regexp (concat funda-haxe-identifier-regexp "[ \t]*:"))
 
-(setq haxe-namespace-package-regexp (concat "import " haxe-identifier-regexp))
-(setq haxe-vardef-regexp (concat "\\(var\\)[ \t]*" haxe-variable-regexp))
+(setq funda-haxe-namespace-package-regexp (concat "import " funda-haxe-identifier-regexp))
+(setq funda-haxe-vardef-regexp (concat "\\(var\\)[ \t]*" funda-haxe-variable-regexp))
 
-(setq haxe-functiondef-regexp (concat "\\(function\\)[ \t]*" haxe-identifier-regexp "?[ \t]*("))
-(setq haxe-anonymous-function-def-regexp "\\(function\\)[ \t]*(")
+(setq funda-haxe-functiondef-regexp (concat "\\(function\\)[ \t]*" funda-haxe-identifier-regexp "?[ \t]*("))
+(setq funda-haxe-anonymous-function-def-regexp "\\(function\\)[ \t]*(")
 
 
-(defun haxe-walk-argument-list ()
+(defun funda-haxe-walk-argument-list ()
   "Walk into the arguments list as a pre-match form of a anchored font-lock"
   (save-excursion
     (goto-char (match-end 0))
@@ -73,52 +73,52 @@
  )
 
 ;; Syntax Highlighting
-(setq haxe-font-lock-keywords
+(setq funda-haxe-font-lock-keywords
       `(
 
-        (,haxe-namespace-regexp (0 font-lock-keyword-face)
-                                (,haxe-identifier-regexp nil nil (0 font-lock-constant-face)))
+        (,funda-haxe-namespace-regexp (0 font-lock-keyword-face)
+                                (,funda-haxe-identifier-regexp nil nil (0 font-lock-constant-face)))
 
-        (,haxe-vardef-regexp (1 font-lock-keyword-face) (2 font-lock-variable-name-face)
+        (,funda-haxe-vardef-regexp (1 font-lock-keyword-face) (2 font-lock-variable-name-face)
                              ;; Highlight possible accessors for the variable
-                             (,haxe-accessors-scope-regexp nil nil (0 font-lock-constant-face)))
+                             (,funda-haxe-accessors-scope-regexp nil nil (0 font-lock-constant-face)))
 
        
-        (,haxe-functiondef-regexp (1 font-lock-constant-face) (2 font-lock-function-name-face)
+        (,funda-haxe-functiondef-regexp (1 font-lock-constant-face) (2 font-lock-function-name-face)
                                   ;; Highlight possible parameters as variable names
-                                   (,haxe-functiondef-param-regexp
+                                   (,funda-haxe-functiondef-param-regexp
                                    ;; Pre-match form
-                                   (haxe-walk-argument-list)
+                                   (funda-haxe-walk-argument-list)
                                    ;; Post-match form
                                    (goto-char (match-end 0))
                                    (1 font-lock-variable-name-face)))
         
-        (,haxe-classname-regexp . font-lock-type-face)
-        (,haxe-classdef-regexp . font-lock-keyword-face)
-        (,haxe-scope-modifiers-regexp . font-lock-keyword-face)
-        (,haxe-keywords-regexp . font-lock-keyword-face)
-        (,haxe-sub-keywords-regexp . font-lock-keyword-face)
-        (,haxe-primary-expressions-regexp . font-lock-keyword-face)
-        (,haxe-constant-expressions-regexp . font-lock-constant-face)
+        (,funda-haxe-classname-regexp . font-lock-type-face)
+        (,funda-haxe-classdef-regexp . font-lock-keyword-face)
+        (,funda-haxe-scope-modifiers-regexp . font-lock-keyword-face)
+        (,funda-haxe-keywords-regexp . font-lock-keyword-face)
+        (,funda-haxe-sub-keywords-regexp . font-lock-keyword-face)
+        (,funda-haxe-primary-expressions-regexp . font-lock-keyword-face)
+        (,funda-haxe-constant-expressions-regexp . font-lock-constant-face)
         ))
 
 
 ;; Syntax table
-(defvar haxe-mode-syntax-table
-  (let ((haxe-mode-syntax-table (make-syntax-table)))
+(defvar funda-haxe-mode-syntax-table
+  (let ((funda-haxe-mode-syntax-table (make-syntax-table)))
     ;; Support C-style comments
-    (modify-syntax-entry ?/ ". 124b" haxe-mode-syntax-table)
-    (modify-syntax-entry ?* ". 23" haxe-mode-syntax-table)
-    (modify-syntax-entry ?\n "> b" haxe-mode-syntax-table)
-	haxe-mode-syntax-table)
-"Syntax table for haxe-mode")
+    (modify-syntax-entry ?/ ". 124b" funda-haxe-mode-syntax-table)
+    (modify-syntax-entry ?* ". 23" funda-haxe-mode-syntax-table)
+    (modify-syntax-entry ?\n "> b" funda-haxe-mode-syntax-table)
+	funda-haxe-mode-syntax-table)
+  "Syntax table for funda-haxe-mode")
 
 
 ;; Indenting
-(defvar haxe-indent-offset tab-width
-  "*Indentation offset for `haxe-mode'.")
-(defun haxe-indent-line ()
-  "Indent current line for `haxe-mode'."
+(defvar funda-haxe-indent-offset tab-width
+  "*Indentation offset for `funda-haxe-mode'.")
+(defun funda-haxe-indent-line ()
+  "Indent current line for `funda-haxe-mode'."
   (interactive)
   (let ((indent-col 0))
     (save-excursion
@@ -127,32 +127,32 @@
           (while t
             (backward-up-list 1)
             (when (looking-at "[[{]")
-              (setq indent-col (+ indent-col haxe-indent-offset))))
+              (setq indent-col (+ indent-col funda-haxe-indent-offset))))
         (error nil)))
     (save-excursion
       (back-to-indentation)
-      (when (and (looking-at "[]}]") (>= indent-col haxe-indent-offset))
-        (setq indent-col (- indent-col haxe-indent-offset))))
+      (when (and (looking-at "[]}]") (>= indent-col funda-haxe-indent-offset))
+        (setq indent-col (- indent-col funda-haxe-indent-offset))))
     (indent-line-to indent-col)))
 
 
 ;; Mode definition
-(define-derived-mode haxe-mode fundamental-mode
+(define-derived-mode funda-haxe-mode fundamental-mode
   "haxe mode"
   "Fundamental Major mode for Haxe"
   (kill-all-local-variables)
   (interactive)
-  (setq font-lock-defaults '((haxe-font-lock-keywords)))
-  (set-syntax-table haxe-mode-syntax-table)
-  (set (make-local-variable 'indent-line-function) 'haxe-indent-line)
+  (setq font-lock-defaults '((funda-haxe-font-lock-keywords)))
+  (set-syntax-table funda-haxe-mode-syntax-table)
+  (set (make-local-variable 'indent-line-function) 'funda-haxe-indent-line)
   (set (make-local-variable 'comment-start) "//")
   (set (make-local-variable 'comment-end) "")
-  (setq major-mode 'haxe-mode
+  (setq major-mode 'funda-haxe-mode
         mode-name "haXe"
-        local-abbrev-table haxe-mode-abbrev-table
+        local-abbrev-table funda-haxe-mode-abbrev-table
         abbrev-mode t)
 )
 
-(add-to-list 'auto-mode-alist '("\\.hx\\'" . haxe-mode))
+(add-to-list 'auto-mode-alist '("\\.hx\\'" . funda-haxe-mode))
 
 (provide 'funda-haxe-mode)
