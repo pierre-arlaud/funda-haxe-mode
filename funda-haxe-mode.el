@@ -53,11 +53,24 @@
 (setq haxe-identifier-regexp "\\<\\([a-z][A-Za-z0-9_]*\\)\\>")
 (setq haxe-variable-regexp "\\<\\([A-Z_]*\\|[a-z][A-Za-z0-9_]*\\)\\>") ; constants support
 (setq haxe-classname-regexp "\\<\\([A-Z][A-Za-z0-9_]*\\)\\>")
-(setq haxe-param-regexp (concat "[,\\(][ \t]*" haxe-identifier-regexp))
+(setq haxe-functiondef-param-regexp (concat haxe-identifier-regexp "[ \t]*:"))
 
 (setq haxe-namespace-package-regexp (concat "import " haxe-identifier-regexp))
 (setq haxe-vardef-regexp (concat "\\(var\\)[ \t]*" haxe-variable-regexp))
-(setq haxe-functiondef-regexp (concat "\\(function\\)[ \t]*" haxe-identifier-regexp))
+
+(setq haxe-functiondef-regexp (concat "\\(function\\)[ \t]*" haxe-identifier-regexp "?[ \t]*("))
+(setq haxe-anonymous-function-def-regexp "\\(function\\)[ \t]*(")
+
+
+(defun haxe-walk-argument-list ()
+  "Walk into the arguments list as a pre-match form of a anchored font-lock"
+  (save-excursion
+    (goto-char (match-end 0))
+    (backward-char)
+    (ignore-errors
+      (forward-sexp))
+    (point))
+ )
 
 ;; Syntax Highlighting
 (setq haxe-font-lock-keywords
@@ -69,11 +82,17 @@
         (,haxe-vardef-regexp (1 font-lock-keyword-face) (2 font-lock-variable-name-face)
                              ;; Highlight possible accessors for the variable
                              (,haxe-accessors-scope-regexp nil nil (0 font-lock-constant-face)))
-        
-        (,haxe-functiondef-regexp (1 font-lock-keyword-face) (2 font-lock-function-name-face)
+
+       
+        (,haxe-functiondef-regexp (1 font-lock-constant-face) (2 font-lock-function-name-face)
                                   ;; Highlight possible parameters as variable names
-                                  (,haxe-param-regexp nil ?( (1 font-lock-variable-name-face)))
-                                  
+                                   (,haxe-functiondef-param-regexp
+                                   ;; Pre-match form
+                                   (haxe-walk-argument-list)
+                                   ;; Post-match form
+                                   (goto-char (match-end 0))
+                                   (1 font-lock-variable-name-face)))
+        
         (,haxe-classname-regexp . font-lock-type-face)
         (,haxe-classdef-regexp . font-lock-keyword-face)
         (,haxe-scope-modifiers-regexp . font-lock-keyword-face)
