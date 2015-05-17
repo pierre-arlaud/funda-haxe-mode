@@ -30,7 +30,7 @@
 
 ;; Define regexps of the haxe grammar
 (setq funda-haxe-namespace '("import" "package"))
-(setq funda-haxe-classdef '("class" "interface" "enum" "typedef" "enum"))
+(setq funda-haxe-class-def '("class" "interface" "enum" "typedef" "enum"))
 (setq funda-haxe-scope-modifiers '("static" "public" "private" "override" "get" "set" "inline"))
 (setq funda-haxe-accessors-scope '("get" "set" "default" "null" "never" "dynamic")) ;; `null` is redundant because it's already a constant
 (setq funda-haxe-keywords '("for" "if" "switch" "while" "try" "catch" "do" "else" "case" "default"))
@@ -40,7 +40,7 @@
 
 ;; Regular expressions based on lists
 (setq funda-haxe-namespace-regexp (regexp-opt funda-haxe-namespace 'words))
-(setq funda-haxe-classdef-regexp (regexp-opt funda-haxe-classdef 'words))
+(setq funda-haxe-class-def-regexp (regexp-opt funda-haxe-class-def 'words))
 (setq funda-haxe-scope-modifiers-regexp (regexp-opt funda-haxe-scope-modifiers 'words))
 (setq funda-haxe-accessors-scope-regexp (regexp-opt funda-haxe-accessors-scope 'words))
 (setq funda-haxe-keywords-regexp (regexp-opt funda-haxe-keywords 'words))
@@ -53,12 +53,12 @@
 (setq funda-haxe-identifier-regexp "\\<\\([a-z][A-Za-z0-9_]*\\)\\>")
 (setq funda-haxe-variable-regexp "\\<\\([A-Z_]*\\|[a-z][A-Za-z0-9_]*\\)\\>") ; constants support
 (setq funda-haxe-classname-regexp "\\<\\([A-Z][A-Za-z0-9_]*\\)\\>")
-(setq funda-haxe-functiondef-param-regexp (concat funda-haxe-identifier-regexp "[ \t]*:"))
+(setq funda-haxe-function-def-param-regexp (concat funda-haxe-identifier-regexp "[ \t]*:"))
 
 (setq funda-haxe-namespace-package-regexp (concat "import " funda-haxe-identifier-regexp))
-(setq funda-haxe-vardef-regexp (concat "\\(var\\)[ \t]*" funda-haxe-variable-regexp))
+(setq funda-haxe-var-def-regexp (concat "\\(var\\)[ \t]*" funda-haxe-variable-regexp))
 
-(setq funda-haxe-functiondef-regexp (concat "\\(function\\)[ \t]*" funda-haxe-identifier-regexp "?[ \t]*("))
+(setq funda-haxe-function-def-regexp (concat "\\(function\\)[ \t]*" funda-haxe-identifier-regexp "?[ \t]*("))
 (setq funda-haxe-anonymous-function-def-regexp "\\(function\\)[ \t]*(")
 
 
@@ -79,14 +79,23 @@
         (,funda-haxe-namespace-regexp (0 font-lock-keyword-face)
                                 (,funda-haxe-identifier-regexp nil nil (0 font-lock-constant-face)))
 
-        (,funda-haxe-vardef-regexp (1 font-lock-keyword-face) (2 font-lock-variable-name-face)
+        (,funda-haxe-var-def-regexp (1 font-lock-keyword-face) (2 font-lock-variable-name-face)
                              ;; Highlight possible accessors for the variable
                              (,funda-haxe-accessors-scope-regexp nil nil (0 font-lock-constant-face)))
 
        
-        (,funda-haxe-functiondef-regexp (1 font-lock-keyword-face) (2 font-lock-function-name-face)
+        (,funda-haxe-function-def-regexp (1 font-lock-keyword-face) (2 font-lock-function-name-face)
                                   ;; Highlight possible parameters as variable names
-                                   (,funda-haxe-functiondef-param-regexp
+                                   (,funda-haxe-function-def-param-regexp
+                                   ;; Pre-match form
+                                   (funda-haxe-walk-argument-list)
+                                   ;; Post-match form
+                                   (goto-char (match-end 0))
+                                   (1 font-lock-variable-name-face)))
+
+        (,funda-haxe-anonymous-function-def-regexp (1 font-lock-keyword-face)
+                                  ;; Highlight possible parameters as variable names
+                                   (,funda-haxe-function-def-param-regexp
                                    ;; Pre-match form
                                    (funda-haxe-walk-argument-list)
                                    ;; Post-match form
@@ -94,7 +103,7 @@
                                    (1 font-lock-variable-name-face)))
         
         (,funda-haxe-classname-regexp . font-lock-type-face)
-        (,funda-haxe-classdef-regexp . font-lock-keyword-face)
+        (,funda-haxe-class-def-regexp . font-lock-keyword-face)
         (,funda-haxe-scope-modifiers-regexp . font-lock-keyword-face)
         (,funda-haxe-keywords-regexp . font-lock-keyword-face)
         (,funda-haxe-sub-keywords-regexp . font-lock-keyword-face)
