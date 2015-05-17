@@ -34,7 +34,7 @@
 (setq funda-haxe-scope-modifiers '("static" "public" "private" "override" "get" "set" "inline"))
 (setq funda-haxe-accessors-scope '("get" "set" "default" "null" "never" "dynamic")) ;; `null` is redundant because it's already a constant
 (setq funda-haxe-keywords '("for" "if" "switch" "while" "try" "catch" "do" "else" "case" "default"))
-(setq funda-haxe-sub-keywords '("break" "continue" "return" "new" "in" "extends" "implements" "function" "var"))
+(setq funda-haxe-sub-keywords '("break" "continue" "return" "new" "in" "extends" "implements" "var"))
 (setq funda-haxe-constant-expressions '("false" "true" "null"))
 (setq funda-haxe-primary-expressions '("this" "super"))
 
@@ -84,7 +84,7 @@
                              (,funda-haxe-accessors-scope-regexp nil nil (0 font-lock-constant-face)))
 
        
-        (,funda-haxe-functiondef-regexp (1 font-lock-constant-face) (2 font-lock-function-name-face)
+        (,funda-haxe-functiondef-regexp (1 font-lock-keyword-face) (2 font-lock-function-name-face)
                                   ;; Highlight possible parameters as variable names
                                    (,funda-haxe-functiondef-param-regexp
                                    ;; Pre-match form
@@ -110,6 +110,7 @@
     (modify-syntax-entry ?/ ". 124b" funda-haxe-mode-syntax-table)
     (modify-syntax-entry ?* ". 23" funda-haxe-mode-syntax-table)
     (modify-syntax-entry ?\n "> b" funda-haxe-mode-syntax-table)
+    (modify-syntax-entry ?' "\"" funda-haxe-mode-syntax-table)
 	funda-haxe-mode-syntax-table)
   "Syntax table for funda-haxe-mode")
 
