@@ -34,7 +34,7 @@
 (setq funda-haxe-scope-modifiers '("static" "public" "private" "override" "get" "set" "inline"))
 (setq funda-haxe-accessors-scope '("get" "set" "default" "null" "never" "dynamic")) ;; `null` is redundant because it's already a constant
 (setq funda-haxe-keywords '("for" "if" "switch" "while" "try" "catch" "do" "else" "case" "default"))
-(setq funda-haxe-sub-keywords '("break" "continue" "return" "new" "in" "extends" "implements" "var"))
+(setq funda-haxe-sub-keywords '("break" "continue" "return" "new" "in" "extends" "implements" "var" "function"))
 (setq funda-haxe-constant-expressions '("false" "true" "null"))
 (setq funda-haxe-primary-expressions '("this" "super"))
 
@@ -124,9 +124,10 @@
   "Syntax table for funda-haxe-mode")
 
 
+
 ;; Indenting
 (defvar funda-haxe-indent-offset tab-width
-  "*Indentation offset for `funda-haxe-mode'.")
+  "Indentation offset for `funda-haxe-mode'.")
 (defun funda-haxe-indent-line ()
   "Indent current line for `funda-haxe-mode'."
   (interactive)
@@ -136,15 +137,26 @@
       (condition-case nil
           (while t
             (backward-up-list 1)
-            (when (looking-at "[[{]")
+            (when (looking-at "[([{]")
               (setq indent-col (+ indent-col funda-haxe-indent-offset))))
         (error nil)))
     (save-excursion
       (back-to-indentation)
-      (when (and (looking-at "[]}]") (>= indent-col funda-haxe-indent-offset))
+      (when (and (looking-at "[]})]") (>= indent-col funda-haxe-indent-offset))
         (setq indent-col (- indent-col funda-haxe-indent-offset))))
-    (indent-line-to indent-col)))
 
+    ;; Indenting current line and putting point where it should be
+  (let* ((parse-status
+          (save-excursion (syntax-ppss (point-at-bol))))
+         (offset (- (point) (save-excursion (back-to-indentation) (point)))))
+    (indent-line-to indent-col)
+    (when (> offset 0) (forward-char offset)))))
+
+;; Electric mode
+(setq electric-indent-chars
+      (append "[]{}():;," electric-indent-chars))
+(setq electric-layout-rules
+      '((?\; . after) (?\{ . after) (?\} . before)))
 
 ;; Mode definition
 (define-derived-mode funda-haxe-mode fundamental-mode
