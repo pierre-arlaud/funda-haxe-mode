@@ -1,5 +1,5 @@
 ;; Funda HaXe Mode
-;; Version: 0.1.1
+;; Version: 0.1.2
 ;; Author: Pierre Arlaud
 ;; URL: https://github.com/pierre-arlaud/funda-haxe-mode
 
@@ -31,7 +31,7 @@
 ;; Define regexps of the haxe grammar
 (setq funda-haxe-namespace '("import" "package"))
 (setq funda-haxe-class-def '("class" "interface" "enum" "typedef" "enum"))
-(setq funda-haxe-scope-modifiers '("static" "public" "private" "override" "get" "set" "inline"))
+(setq funda-haxe-scope-modifiers '("static" "public" "private" "override" "get" "set" "inline" "extern"))
 (setq funda-haxe-accessors-scope '("get" "set" "default" "null" "never" "dynamic")) ;; `null` is redundant because it's already a constant
 (setq funda-haxe-keywords '("for" "if" "switch" "while" "try" "catch" "do" "else" "case" "default"))
 (setq funda-haxe-sub-keywords '("break" "continue" "return" "new" "in" "extends" "implements" "var" "function"))
